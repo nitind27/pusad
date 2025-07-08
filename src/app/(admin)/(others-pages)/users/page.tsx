@@ -26,7 +26,7 @@ const getTalukas = async (): Promise<Taluka[]> => {
 };
 const getgrampanchayat = async (): Promise<Grampanchayattype[]> => {
 
-  const schemescrud = await fetch(`https://schemeserve.weclocks.online/api/grampanchayt`, { cache: 'no-store' });
+  const schemescrud = await fetch(`https://pusad.weclocks.org/api/grampanchayt`, { cache: 'no-store' });
   // console.log("reess", res)
   return schemescrud.json();
 

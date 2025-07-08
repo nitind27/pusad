@@ -15,7 +15,7 @@ import { Village } from '@/components/Village/village';
 import React, { Suspense } from 'react'
 
 const getUsers = async (): Promise<vyaktikDataall[]> => {
-  const res = await fetch(`https://schemeserve.weclocks.online/api/vyaktikapi`, { cache: 'no-store' });
+  const res = await fetch(`https://pusad.weclocks.org/api/vyaktikapi`, { cache: 'no-store' });
  
   return res.json();
 
@@ -23,7 +23,7 @@ const getUsers = async (): Promise<vyaktikDataall[]> => {
 
 const getschemescrud = async (): Promise<Schemesdatas[]> => {
 
-  const schemescrud = await fetch(`https://schemeserve.weclocks.online/api/schemescrud`, { cache: 'no-store' });
+  const schemescrud = await fetch(`https://pusad.weclocks.org/api/schemescrud`, { cache: 'no-store' });
   // console.log("reess", res)
   return schemescrud.json();
 
@@ -31,21 +31,21 @@ const getschemescrud = async (): Promise<Schemesdatas[]> => {
 
 const gettalukadata = async (): Promise<Taluka[]> => {
 
-  const schemescrud = await fetch(`https://schemeserve.weclocks.online/api/taluka`, { cache: 'no-store' });
+  const schemescrud = await fetch(`https://pusad.weclocks.org/api/taluka`, { cache: 'no-store' });
   // console.log("reess", res)
   return schemescrud.json();
 
 };
 const gettalukvillage = async (): Promise<Village[]> => {
 
-  const schemescrud = await fetch(`https://schemeserve.weclocks.online/api/villages`, { cache: 'no-store' });
+  const schemescrud = await fetch(`https://pusad.weclocks.org/api/villages`, { cache: 'no-store' });
   // console.log("reess", res)
   return schemescrud.json();
 
 };
 const getgrampanchayat = async (): Promise<Grampanchayattype[]> => {
 
-  const schemescrud = await fetch(`https://schemeserve.weclocks.online/api/grampanchayt`, { cache: 'no-store' });
+  const schemescrud = await fetch(`https://pusad.weclocks.org/api/grampanchayt`, { cache: 'no-store' });
   // console.log("reess", res)
   return schemescrud.json();
 
