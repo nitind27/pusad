@@ -152,7 +152,7 @@ interface BhautikDataall {
     village_id: string;
     gp_id: string;
     agedata: string;
-        taluka_name: string;
+    taluka_name: string;
     village_name: string;
     grampanchayat_name: string;
 }
@@ -194,7 +194,7 @@ const Vyaktigatdatafilter: React.FC<Props> = ({
     const [selectedGrampanchayat, setSelectedGrampanchayat] = useState<string>('');
     const [selectedVillage, setSelectedVillage] = useState<string>('');
 
-    
+
 
     // Filter data based on selected filters
     const filteredData = useMemo(() => {
@@ -272,7 +272,7 @@ const Vyaktigatdatafilter: React.FC<Props> = ({
     // Filtered field options based on search
     const filteredFieldOptions = useMemo(() => {
         if (!searchField) return fieldOptions;
-        return fieldOptions.filter(field => 
+        return fieldOptions.filter(field =>
             field.label.toLowerCase().includes(searchField.toLowerCase()) ||
             field.category.toLowerCase().includes(searchField.toLowerCase())
         );
@@ -327,165 +327,165 @@ const Vyaktigatdatafilter: React.FC<Props> = ({
     });
 
     // Handle nested state changes
-const handleNestedChange = (
-    parentField: keyof BhautikData,
-    childField: string,
-    value: string
-) => {
-    // Validate input is a number or empty
-    if (value && !/^\d*$/.test(value)) {
-        return; // Only allow numbers
-    }
+    const handleNestedChange = (
+        parentField: keyof BhautikData,
+        childField: string,
+        value: string
+    ) => {
+        // Validate input is a number or empty
+        if (value && !/^\d*$/.test(value)) {
+            return; // Only allow numbers
+        }
 
-    const familyTotal = Number(formData.familymembercount.total) || 0;
-    const asleliFields = ['castcertificate', 'aadharcard', 'voteridcard', 'pmKisanCard', 'ayushmanCard'];
+        const familyTotal = Number(formData.familymembercount.total) || 0;
+        const asleliFields = ['castcertificate', 'aadharcard', 'voteridcard', 'pmKisanCard', 'ayushmanCard'];
 
-    // Validation for asleli fields
-    if (asleliFields.includes(parentField) && childField === 'asleli') {
-        if (Number(value) > familyTotal) {
-            setFamilyErrors(prev => ({ 
-                ...prev, 
-                [`${parentField}_asleli`]: `असलेली संख्या (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.` 
-            }));
-            toast.error(`असलेली संख्या (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`);
-            return;
-        } else {
+        // Validation for asleli fields
+        if (asleliFields.includes(parentField) && childField === 'asleli') {
+            if (Number(value) > familyTotal) {
+                setFamilyErrors(prev => ({
+                    ...prev,
+                    [`${parentField}_asleli`]: `असलेली संख्या (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`
+                }));
+                toast.error(`असलेली संख्या (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`);
+                return;
+            } else {
+                setFamilyErrors(prev => {
+                    const newErrors = { ...prev };
+                    delete newErrors[`${parentField}_asleli`];
+                    return newErrors;
+                });
+            }
+        }
+
+        // Validation for family member counts
+        if (parentField === 'familymembercount' && (childField === 'female' || childField === 'male')) {
+            const newTotal = (childField === 'female' ? Number(value) : Number(formData.familymembercount.female || 0)) +
+                (childField === 'male' ? Number(value) : Number(formData.familymembercount.male || 0));
+
+            // Validate against asleli fields
+            for (const field of asleliFields) {
+                const valueObj = formData[field as keyof BhautikData];
+                if (hasAsleli(valueObj)) {
+                    const asleliValue = Number(valueObj.asleli) || 0;
+                    if (newTotal < asleliValue) {
+                        setFamilyErrors(prev => ({
+                            ...prev,
+                            familymembercount: `कुटुंबातील सदस्य संख्या (${newTotal}) असलेली संख्या (${asleliValue}) पेक्षा कमी असू शकत नाही.`
+                        }));
+                        toast.error(`कुटुंबातील सदस्य संख्या (${newTotal}) असलेली संख्या (${asleliValue}) पेक्षा कमी असू शकत नाही.`);
+                        return;
+                    }
+                }
+            }
             setFamilyErrors(prev => {
                 const newErrors = { ...prev };
-                delete newErrors[`${parentField}_asleli`];
+                delete newErrors.familymembercount;
                 return newErrors;
             });
         }
-    }
 
-    // Validation for family member counts
-    if (parentField === 'familymembercount' && (childField === 'female' || childField === 'male')) {
-        const newTotal = (childField === 'female' ? Number(value) : Number(formData.familymembercount.female || 0)) + 
-                         (childField === 'male' ? Number(value) : Number(formData.familymembercount.male || 0));
-
-        // Validate against asleli fields
-        for (const field of asleliFields) {
-            const valueObj = formData[field as keyof BhautikData];
-            if (hasAsleli(valueObj)) {
-                const asleliValue = Number(valueObj.asleli) || 0;
-                if (newTotal < asleliValue) {
-                    setFamilyErrors(prev => ({ 
-                        ...prev, 
-                        familymembercount: `कुटुंबातील सदस्य संख्या (${newTotal}) असलेली संख्या (${asleliValue}) पेक्षा कमी असू शकत नाही.` 
+        // Validation for agedata fields
+        if (parentField === 'agedata') {
+            if (childField === 'female') {
+                const femaleCount = Number(value);
+                const totalFemales = Number(formData.familymembercount.female || 0);
+                if (femaleCount > totalFemales) {
+                    setFamilyErrors(prev => ({
+                        ...prev,
+                        agedata_female: `18 वर्षावरील स्री (${value}) कुटुंबातील स्री (${totalFemales}) पेक्षा जास्त असू शकत नाही.`
                     }));
-                    toast.error(`कुटुंबातील सदस्य संख्या (${newTotal}) असलेली संख्या (${asleliValue}) पेक्षा कमी असू शकत नाही.`);
+                    toast.error(`18 वर्षावरील स्री (${value}) कुटुंबातील स्री (${totalFemales}) पेक्षा जास्त असू शकत नाही.`);
                     return;
                 }
             }
+
+            if (childField === 'male') {
+                const maleCount = Number(value);
+                const totalMales = Number(formData.familymembercount.male || 0);
+                if (maleCount > totalMales) {
+                    setFamilyErrors(prev => ({
+                        ...prev,
+                        agedata_male: `18 वर्षावरील पुरुष (${value}) कुटुंबातील पुरुष (${totalMales}) पेक्षा जास्त असू शकत नाही.`
+                    }));
+                    toast.error(`18 वर्षावरील पुरुष (${value}) कुटुंबातील पुरुष (${totalMales}) पेक्षा जास्त असू शकत नाही.`);
+                    return;
+                }
+            }
+
+            if (childField === 'total') {
+                const totalAdults = Number(value);
+                if (totalAdults > familyTotal) {
+                    setFamilyErrors(prev => ({
+                        ...prev,
+                        agedata_total: `18 वर्षावरील एकूण (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`
+                    }));
+                    toast.error(`18 वर्षावरील एकूण (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`);
+                    return;
+                }
+            }
+
+            // Clear any agedata errors if validation passes
+            setFamilyErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors.agedata_female;
+                delete newErrors.agedata_male;
+                delete newErrors.agedata_total;
+                return newErrors;
+            });
         }
-        setFamilyErrors(prev => {
-            const newErrors = { ...prev };
-            delete newErrors.familymembercount;
-            return newErrors;
+
+        // Update the form state
+        setFormData(prev => {
+            const newFormData = { ...prev };
+
+            // Handle familymembercount updates
+            if (parentField === 'familymembercount') {
+                const updated = {
+                    ...newFormData.familymembercount,
+                    [childField]: value
+                };
+
+                if (childField === 'female' || childField === 'male') {
+                    updated.total = String(
+                        Number(childField === 'female' ? value : newFormData.familymembercount.female || 0) +
+                        Number(childField === 'male' ? value : newFormData.familymembercount.male || 0)
+                    );
+                }
+
+                newFormData.familymembercount = updated;
+            }
+            // Handle agedata updates
+            else if (parentField === 'agedata') {
+                const updated = {
+                    ...newFormData.agedata,
+                    [childField]: value
+                };
+
+                if (childField === 'female' || childField === 'male') {
+                    updated.total = String(
+                        Number(childField === 'female' ? value : newFormData.agedata.female || 0) +
+                        Number(childField === 'male' ? value : newFormData.agedata.male || 0)
+                    );
+                }
+
+                newFormData.agedata = updated;
+            }
+            // Handle asleli/nasleli fields
+            else if (asleliFields.includes(parentField)) {
+                const parent = newFormData[parentField] as { asleli: string; nasleli: string };
+                const updated = { ...parent, [childField]: value };
+
+                if (childField === 'asleli') {
+                    updated.nasleli = String(Math.max(0, familyTotal - Number(value)));
+                }
+
+                newFormData[parentField as 'castcertificate' | 'aadharcard' | 'voteridcard' | 'pmKisanCard' | 'ayushmanCard'] = updated;
+            }
+
+            return newFormData;
         });
-    }
-
-    // Validation for agedata fields
-    if (parentField === 'agedata') {
-        if (childField === 'female') {
-            const femaleCount = Number(value);
-            const totalFemales = Number(formData.familymembercount.female || 0);
-            if (femaleCount > totalFemales) {
-                setFamilyErrors(prev => ({
-                    ...prev,
-                    agedata_female: `18 वर्षावरील स्री (${value}) कुटुंबातील स्री (${totalFemales}) पेक्षा जास्त असू शकत नाही.`
-                }));
-                toast.error(`18 वर्षावरील स्री (${value}) कुटुंबातील स्री (${totalFemales}) पेक्षा जास्त असू शकत नाही.`);
-                return;
-            }
-        }
-
-        if (childField === 'male') {
-            const maleCount = Number(value);
-            const totalMales = Number(formData.familymembercount.male || 0);
-            if (maleCount > totalMales) {
-                setFamilyErrors(prev => ({
-                    ...prev,
-                    agedata_male: `18 वर्षावरील पुरुष (${value}) कुटुंबातील पुरुष (${totalMales}) पेक्षा जास्त असू शकत नाही.`
-                }));
-                toast.error(`18 वर्षावरील पुरुष (${value}) कुटुंबातील पुरुष (${totalMales}) पेक्षा जास्त असू शकत नाही.`);
-                return;
-            }
-        }
-
-        if (childField === 'total') {
-            const totalAdults = Number(value);
-            if (totalAdults > familyTotal) {
-                setFamilyErrors(prev => ({
-                    ...prev,
-                    agedata_total: `18 वर्षावरील एकूण (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`
-                }));
-                toast.error(`18 वर्षावरील एकूण (${value}) कुटुंबातील सदस्य संख्या (${familyTotal}) पेक्षा जास्त असू शकत नाही.`);
-                return;
-            }
-        }
-
-        // Clear any agedata errors if validation passes
-        setFamilyErrors(prev => {
-            const newErrors = { ...prev };
-            delete newErrors.agedata_female;
-            delete newErrors.agedata_male;
-            delete newErrors.agedata_total;
-            return newErrors;
-        });
-    }
-
-    // Update the form state
-    setFormData(prev => {
-        const newFormData = { ...prev };
-        
-        // Handle familymembercount updates
-        if (parentField === 'familymembercount') {
-            const updated = { 
-                ...newFormData.familymembercount,
-                [childField]: value 
-            };
-            
-            if (childField === 'female' || childField === 'male') {
-                updated.total = String(
-                    Number(childField === 'female' ? value : newFormData.familymembercount.female || 0) + 
-                    Number(childField === 'male' ? value : newFormData.familymembercount.male || 0)
-                );
-            }
-            
-            newFormData.familymembercount = updated;
-        } 
-        // Handle agedata updates
-        else if (parentField === 'agedata') {
-            const updated = { 
-                ...newFormData.agedata,
-                [childField]: value 
-            };
-            
-            if (childField === 'female' || childField === 'male') {
-                updated.total = String(
-                    Number(childField === 'female' ? value : newFormData.agedata.female || 0) + 
-                    Number(childField === 'male' ? value : newFormData.agedata.male || 0)
-                );
-            }
-            
-            newFormData.agedata = updated;
-        }
-        // Handle asleli/nasleli fields
-        else if (asleliFields.includes(parentField)) {
-            const parent = newFormData[parentField] as { asleli: string; nasleli: string };
-            const updated = { ...parent, [childField]: value };
-            
-            if (childField === 'asleli') {
-                updated.nasleli = String(Math.max(0, familyTotal - Number(value)));
-            }
-            
-            newFormData[parentField as 'castcertificate' | 'aadharcard' | 'voteridcard' | 'pmKisanCard' | 'ayushmanCard'] = updated;
-        }
-        
-        return newFormData;
-    });
-};
+    };
 
     // Handle simple field changes
     const handleChange = (field: keyof BhautikData, value: string) => {
@@ -721,12 +721,12 @@ const handleNestedChange = (
     //     setEditId(null);
     // };
 
- 
+
 
     // Download functions
     const handleFieldToggle = (fieldKey: string) => {
-        setSelectedFields(prev => 
-            prev.includes(fieldKey) 
+        setSelectedFields(prev =>
+            prev.includes(fieldKey)
                 ? prev.filter(f => f !== fieldKey)
                 : [...prev, fieldKey]
         );
@@ -783,7 +783,7 @@ const handleNestedChange = (
 
             // Prepare data
             const excelData = filteredData.map(item => {
-               const row: Record<string, string | number | boolean | null | undefined> = {};
+                const row: Record<string, string | number | boolean | null | undefined> = {};
 
                 selectedFields.forEach(fieldKey => {
                     const field = fieldOptions.find(f => f.key === fieldKey);
@@ -807,7 +807,7 @@ const handleNestedChange = (
 
             // Save file
             XLSX.writeFile(wb, filename);
-            
+
             toast.success('Excel फाईल यशस्वीरित्या डाउनलोड झाली');
             setShowDownloadModal(false);
             setSelectedFields([]);
@@ -819,7 +819,7 @@ const handleNestedChange = (
 
     const columns: Column<BhautikDataall>[] = [
         // Location columns
-         {
+        {
             key: "taluka_id",
             label: "तालुका",
             render: (data) => <span>{data.taluka_name || "-"}</span>,
@@ -1054,24 +1054,27 @@ const handleNestedChange = (
     return (
         <div className="">
             {loading && <Loader />}
-            
+
             {/* Custom Filter UI */}
             <div className="bg-white p-4 rounded-lg shadow mb-4">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0 w-full">
                     <h3 className="text-lg font-semibold text-gray-800">फिल्टर</h3>
-                    <div className="flex items-center gap-4">
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
                         <div className="text-sm text-gray-600">
                             दाखवत आहे: <span className="font-semibold">{filteredData.length}</span> पैकी <span className="font-semibold">{data.length}</span> नोंदी
                         </div>
+
                         <button
                             onClick={() => setShowDownloadModal(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors w-full sm:w-auto"
                         >
                             <FaDownload className="text-sm" />
                             Excel डाउनलोड
                         </button>
                     </div>
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Taluka Filter */}
                     <div>
@@ -1133,7 +1136,7 @@ const handleNestedChange = (
                     </div>
                 </div>
 
-                
+
                 {/* Clear Filters Button */}
                 {(selectedTaluka || selectedGrampanchayat || selectedVillage) && (
                     <div className="mt-4">
@@ -2220,7 +2223,7 @@ const handleNestedChange = (
                 searchKey="beneficiery_name"
                 columns={columns}
             />
-            
+
             {/* Download Modal */}
             {showDownloadModal && (
                 <div className="fixed inset-0 bg-[#0303033f] bg-opacity-50 flex items-center justify-center z-999">
@@ -2238,7 +2241,7 @@ const handleNestedChange = (
                                 ×
                             </button>
                         </div>
-                        
+
                         {/* Search Field */}
                         <div className="mb-4">
                             <input
@@ -2249,7 +2252,7 @@ const handleNestedChange = (
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         </div>
-                        
+
                         {/* Select All/Deselect All Buttons */}
                         <div className="flex gap-2 mb-4">
                             <button
@@ -2265,7 +2268,7 @@ const handleNestedChange = (
                                 सर्व निवड रद्द करा
                             </button>
                         </div>
-                        
+
                         {/* Field Selection */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                             {filteredFieldOptions.map((field) => (
@@ -2284,7 +2287,7 @@ const handleNestedChange = (
                                 </div>
                             ))}
                         </div>
-                        
+
                         {/* Download Button */}
                         <div className="flex justify-end gap-3">
                             <button
@@ -2300,11 +2303,10 @@ const handleNestedChange = (
                             <button
                                 onClick={downloadExcel}
                                 disabled={selectedFields.length === 0}
-                                className={`px-4 py-2 rounded-md text-sm transition-colors ${
-                                    selectedFields.length === 0
+                                className={`px-4 py-2 rounded-md text-sm transition-colors ${selectedFields.length === 0
                                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                         : 'bg-green-600 text-white hover:bg-green-700'
-                                }`}
+                                    }`}
                             >
                                 डाउनलोड करा ({selectedFields.length} फील्ड)
                             </button>
