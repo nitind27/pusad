@@ -1857,8 +1857,8 @@ const Bhautikadata: React.FC<Props> = ({
                                     <input
                                         type="text"
                                         className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm bg-white"
-                                        value={formData.village_distance}
-                                        onChange={(e) => handleChange('village_distance', e.target.value)}
+                                        value={formData.village_distance.toLocaleUpperCase()}
+                                        onChange={(e) => handleChange('village_distance', e.target.value.toLocaleUpperCase())}
                                     />
                                 </div>
                                 <div className=" p-2  bg-gray-100  rounded-lg shadow mt-5 md:mt-0">

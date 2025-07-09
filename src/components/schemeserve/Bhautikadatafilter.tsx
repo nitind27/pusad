@@ -160,7 +160,7 @@ interface BhautikDataall {
     taluka_id: string;
     village_id: string;
     gp_id: string;
-        taluka_name: string;
+    taluka_name: string;
     village_name: string;
     grampanchayat_name: string;
 }
@@ -206,7 +206,7 @@ const Bhautikadatafilter: React.FC<Props> = ({
     const [selectedVillage, setSelectedVillage] = useState<string>('');
 
     // Generate filter options
- 
+
     // Filter data based on selected filters
     const filteredData = useMemo(() => {
         return data.filter(item => {
@@ -843,7 +843,7 @@ const Bhautikadatafilter: React.FC<Props> = ({
 
     const columns: Column<BhautikDataall>[] = [
         // Existing and population fields
-      {
+        {
             key: "taluka_id",
             label: "तालुका",
             render: (data) => <span>{data.taluka_name || "-"}</span>,
@@ -1084,21 +1084,24 @@ const Bhautikadatafilter: React.FC<Props> = ({
 
             {/* Custom Filter UI */}
             <div className="bg-white p-4 rounded-lg shadow mb-4">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-0 w-full">
                     <h3 className="text-lg font-semibold text-gray-800">फिल्टर</h3>
-                    <div className="flex items-center gap-4">
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
                         <div className="text-sm text-gray-600">
                             दाखवत आहे: <span className="font-semibold">{filteredData.length}</span> पैकी <span className="font-semibold">{data.length}</span> नोंदी
                         </div>
+
                         <button
                             onClick={() => setShowDownloadModal(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-colors w-full sm:w-auto"
                         >
                             <FaDownload className="text-sm" />
                             Excel डाउनलोड
                         </button>
                     </div>
                 </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Taluka Filter */}
                     <div>

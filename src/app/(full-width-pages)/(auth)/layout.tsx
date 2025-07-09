@@ -26,7 +26,7 @@ export default function AuthLayout({
                 </div>
                 <div className="text-white text-[30px] md:whitespace-nowrap">
 
-                  (Scheme - Serve)
+                  (SS - Pusad)
                 </div>
 
                 <img

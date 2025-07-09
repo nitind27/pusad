@@ -1065,8 +1065,8 @@ const Vyaktigatdata: React.FC<Props> = ({
                                 <input
                                     type="text"
                                     className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm bg-white"
-                                    value={formData.totalmembersname}
-                                    onChange={e => handleChange('totalmembersname', e.target.value)}
+                                    value={formData.totalmembersname.toLocaleUpperCase()}
+                                    onChange={e => handleChange('totalmembersname', e.target.value.toLocaleUpperCase())}
                                 />
                             </div> <div className="bg-gray-100 rounded-lg shadow p-4 md:mb-6 mb-5">
                                 <label className="block text-sm font-medium text-gray-700 mb-6">कुटुंब संपर्क क्रमांक</label>
@@ -2037,9 +2037,9 @@ const Vyaktigatdata: React.FC<Props> = ({
                                     <input
                                         type="text"
                                         name="praklpkaryalaly"
-                                        value={formData.praklpkaryalaly}
+                                        value={formData.praklpkaryalaly.toLocaleUpperCase()}
                                         className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm bg-white"
-                                        onChange={e => handleChange('praklpkaryalaly', e.target.value)}
+                                        onChange={e => handleChange('praklpkaryalaly', e.target.value.toLocaleUpperCase())}
                                     />
 
                                 </div>
@@ -2052,9 +2052,9 @@ const Vyaktigatdata: React.FC<Props> = ({
                                     <input
                                         type="text"
                                         name="itarvibhagudan"
-                                        value={formData.itarvibhagudan}
+                                        value={formData.itarvibhagudan.toLocaleUpperCase()}
                                         className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm bg-white"
-                                        onChange={e => handleChange('itarvibhagudan', e.target.value)}
+                                        onChange={e => handleChange('itarvibhagudan', e.target.value.toLocaleUpperCase())}
                                     />
 
 
